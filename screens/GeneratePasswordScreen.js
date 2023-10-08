@@ -1,5 +1,6 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
+import { CheckBox } from "@rneui/themed";
 import {
   StyleSheet,
   View,
@@ -10,12 +11,67 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Color, FontSize, FontFamily } from "../GlobalStyles";
+import { endEvent } from "react-native/Libraries/Performance/Systrace";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
+
 const GeneratePasswordScreen = () => {
+  const [password, setPassword] = useState("");
+  const [passwordLength, setPasswordLength] = useState(8);
+  const [includeLowerCase, setIncludeLowerCase] = useState(true);
+  const [includeUpperCase, setIncludeUpperCase] = useState(true);
+  const [includeNumbers, setIncludeNumbers] = useState(true);
+  const [includeSpecialSymbols, setIncludeSpecialSymbols] = useState(true);
+
+  const generatePassword = () => {
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const numberChars = "0123456789";
+    const specialChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+    let validChars = "";
+
+    if (includeLowerCase) {
+      validChars += lowercaseChars;
+    }
+
+    if (includeUpperCase) {
+      validChars += uppercaseChars;
+    }
+
+    if (includeNumbers) {
+      validChars += numberChars;
+    }
+
+    if (includeSpecialSymbols) {
+      validChars += specialChars;
+    }
+
+    let newPassword = "";
+    for (let i = 0; i < passwordLength; i++) {
+      const randomIndex = Math.floor(Math.random() * validChars.length);
+      newPassword += validChars.charAt(randomIndex);
+    }
+
+    setPassword(newPassword);
+  };
+  useEffect(() => {
+    generatePassword();
+  }, [
+    passwordLength,
+    includeLowerCase,
+    includeUpperCase,
+    includeNumbers,
+    includeSpecialSymbols,
+  ]);
+  useEffect(() => {
+    if (!isNaN(passwordLength)) {
+      generatePassword();
+    }
+  }, [passwordLength]);
   return (
     <View style={styles.c}>
-      <View style={styles.background1Parent}>
+      <View style={[styles.background1Parent, styles.groupChildPosition]}>
         <Image
           style={styles.background1Icon}
           contentFit="cover"
@@ -29,8 +85,11 @@ const GeneratePasswordScreen = () => {
             </Text>
             <TouchableOpacity
               style={[styles.btngenerateParent, styles.btngeneratePosition]}
+              onPress={generatePassword}
             >
-              <View style={[styles.btngenerate, styles.btngeneratePosition]} />
+              <View
+                style={[styles.btngenerate, styles.btngeneratePosition]}
+              ></View>
               <Text
                 style={styles.generatePassword}
               >{`GENERATE PASSWORD `}</Text>
@@ -38,45 +97,142 @@ const GeneratePasswordScreen = () => {
             <View style={styles.frameParent}>
               <View style={styles.passwordLengthParent}>
                 <Text style={styles.includeTypo}>Password length</Text>
-                <TextInput style={styles.frameChild} />
+                <TextInput
+                  style={styles.frameChild}
+                  keyboardType="numeric"
+                  value={passwordLength.toString()}
+                  onChangeText={(text) => setPasswordLength(parseInt(text))}
+                  onBlur={blur}
+                />
               </View>
               <View style={styles.includeLowerCaseLettersParent}>
                 <Text style={[styles.includeLowerCase, styles.includeTypo]}>
                   Include lower case letters
                 </Text>
-                <Image
-                  style={[styles.frameItem, styles.frameLayout]}
-                  contentFit="cover"
-                  source={require("../assets/group-8.png")}
+                <CheckBox
+                  value={includeLowerCase}
+                  onValueChange={() => setIncludeLowerCase(!includeLowerCase)}
+                  center
+                  checked={includeLowerCase}
+                  onPress={() => setIncludeLowerCase(!includeLowerCase)}
+                  iconRight
+                  iconType="material"
+                  checkedColor="red"
+                  containerStyle={{ padding: 0, marginLeft: 19 }} // Để loại bỏ khoảng cách xung quanh CheckBox
+                  uncheckedIcon={
+                    <Image
+                      source={require("../assets/box.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
+                  checkedIcon={
+                    <Image
+                      source={require("../assets/checkbox.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
                 />
               </View>
               <View style={styles.includeLowerCaseLettersParent}>
                 <Text style={[styles.includeUpcaseLetters, styles.includeTypo]}>
                   Include upcase letters
                 </Text>
-                <View style={[styles.frameInner, styles.frameLayout]} />
+                <CheckBox
+                  value={includeUpperCase}
+                  onValueChange={() => setIncludeUpperCase(!includeUpperCase)}
+                  center
+                  checked={includeUpperCase}
+                  onPress={() => setIncludeUpperCase(!includeUpperCase)}
+                  iconRight
+                  iconType="material"
+                  checkedColor="red"
+                  containerStyle={{ padding: 0, marginLeft: 60 }} // Để loại bỏ khoảng cách xung quanh CheckBox
+                  uncheckedIcon={
+                    <Image
+                      source={require("../assets/box.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
+                  checkedIcon={
+                    <Image
+                      source={require("../assets/checkbox.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
+                />
+                <View style={[styles.frameItem, styles.frameLayout]} />
               </View>
               <View style={styles.includeLowerCaseLettersParent}>
                 <Text style={[styles.includeNumber, styles.includeTypo]}>
                   Include number
                 </Text>
-                <Image
-                  style={[styles.groupIcon, styles.frameLayout]}
-                  contentFit="cover"
-                  source={require("../assets/group-8.png")}
+                <CheckBox
+                  value={includeNumbers}
+                  onValueChange={() => setIncludeNumbers(!includeNumbers)}
+                  center
+                  checked={includeNumbers}
+                  onPress={() => setIncludeNumbers(!includeNumbers)}
+                  iconRight
+                  iconType="material"
+                  checkedColor="red"
+                  containerStyle={{ padding: 0, marginLeft: 106 }} // Để loại bỏ khoảng cách xung quanh CheckBox
+                  uncheckedIcon={
+                    <Image
+                      source={require("../assets/box.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
+                  checkedIcon={
+                    <Image
+                      source={require("../assets/checkbox.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
                 />
+                <View style={[styles.rectangleContainer, styles.frameLayout]}>
+                  <View style={[styles.groupChild, styles.frameLayout]} />
+                </View>
               </View>
               <View style={styles.includeLowerCaseLettersParent}>
                 <Text style={[styles.includeSpecialSymbol, styles.includeTypo]}>
                   Include special symbol
                 </Text>
-                <View style={[styles.rectangleView, styles.frameLayout]} />
+
+                <CheckBox
+                  value={includeSpecialSymbols}
+                  onValueChange={() =>
+                    setIncludeSpecialSymbols(!includeSpecialSymbols)
+                  }
+                  center
+                  checked={includeSpecialSymbols}
+                  onPress={() =>
+                    setIncludeSpecialSymbols(!includeSpecialSymbols)
+                  }
+                  iconRight
+                  iconType="material"
+                  checkedColor="red"
+                  containerStyle={{ padding: 0, marginLeft: 53 }} // Để loại bỏ khoảng cách xung quanh CheckBox
+                  uncheckedIcon={
+                    <Image
+                      source={require("../assets/box.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
+                  checkedIcon={
+                    <Image
+                      source={require("../assets/checkbox.png")}
+                      style={{ width: 25, height: 25 }} // Cấu hình kích thước hình ảnh
+                    />
+                  }
+                />
               </View>
             </View>
           </View>
           <View style={[styles.txtpasswordParent, styles.txtpasswordPosition]}>
             <View style={[styles.txtpassword, styles.txtpasswordPosition]} />
-            <Text style={[styles.pass, styles.passFlexBox]}>{` `}</Text>
+            <Text style={[styles.pass, styles.passFlexBox, styles.password]}>
+              {password}
+            </Text>
           </View>
         </View>
       </View>
@@ -85,6 +241,11 @@ const GeneratePasswordScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  groupChildPosition: {
+    left: 0,
+    top: 0,
+    position: "absolute",
+  },
   backgroundLayout: {
     height: 605,
     width: 329,
@@ -159,6 +320,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#3b3b98",
     top: 0,
   },
+  password: {
+    justifyContent: "center",
+    display: "flex",
+    textAlign: "center",
+    color: Color.colorWhite,
+    fontFamily: FontFamily.robotoBold,
+    fontWeight: "700",
+    fontSize: 18,
+  },
   generatePassword: {
     marginTop: -10,
     fontSize: 18,
@@ -193,7 +363,14 @@ const styles = StyleSheet.create({
     width: 247,
     height: 27,
   },
-  frameItem: {
+  groupChild: {
+    height: 25,
+    left: 0,
+    top: 0,
+    position: "absolute",
+    backgroundColor: Color.colorWhite,
+  },
+  rectangleWrapper: {
     marginLeft: 19,
     height: 25,
   },
@@ -205,7 +382,7 @@ const styles = StyleSheet.create({
     width: 206,
     height: 26,
   },
-  frameInner: {
+  frameItem: {
     marginLeft: 60,
     height: 25,
     backgroundColor: Color.colorWhite,
@@ -214,7 +391,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 25,
   },
-  groupIcon: {
+  rectangleContainer: {
     marginLeft: 106,
     height: 25,
   },
@@ -222,14 +399,14 @@ const styles = StyleSheet.create({
     width: 213,
     height: 31,
   },
-  rectangleView: {
+  frameInner: {
     marginLeft: 53,
     height: 25,
     backgroundColor: Color.colorWhite,
   },
   frameParent: {
     marginLeft: -145.5,
-    top: 251,
+    top: 230,
     left: "50%",
     position: "absolute",
   },
@@ -266,15 +443,12 @@ const styles = StyleSheet.create({
   },
   background1Parent: {
     flexDirection: "row",
-    left: 0,
-    top: 0,
-    position: "absolute",
   },
   c: {
     flex: 1,
-    width: "100%",
+    width: screenWidth,
     overflow: "hidden",
-    height: 640,
+    height: screenHeight,
     backgroundColor: Color.colorWhite,
   },
 });

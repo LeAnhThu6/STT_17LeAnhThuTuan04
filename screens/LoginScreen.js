@@ -1,12 +1,20 @@
 import * as React from "react";
-import { StyleSheet, View, Text, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import { FontFamily, FontSize, Color } from "../GlobalStyles";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
+  const { navigation, route } = props;
+  const { navigate, goBack } = navigation;
   return (
     <View style={styles.a}>
       <View style={[styles.aInner, styles.aInnerLayout]}>
@@ -17,7 +25,12 @@ const LoginScreen = () => {
             colors={["#fbcb00", "#bf9a00"]}
           />
           <View style={styles.forgotYourPasswordParent}>
-            <Text style={styles.forgotYourPassword}>Forgot your password?</Text>
+            <TouchableOpacity
+              style={styles.forgotYourPassword}
+              onPress={() => navigate("Demo")}
+            >
+              Forgot your password?
+            </TouchableOpacity>
             <View style={[styles.groupParent, styles.parentPosition1]}>
               <View style={styles.frameLayout}>
                 <View
@@ -65,12 +78,13 @@ const LoginScreen = () => {
                 </View>
               </View>
             </View>
-            <View
+            <TouchableOpacity
               style={[styles.btnregisterParent, styles.btnregisterPosition]}
+              onPress={() => navigate("RateScreen")}
             >
               <View style={[styles.btnregister, styles.btnregisterPosition]} />
               <Text style={styles.login}>LOGIN</Text>
-            </View>
+            </TouchableOpacity>
             <Text style={styles.txtregister}>LOGIN</Text>
           </View>
         </View>

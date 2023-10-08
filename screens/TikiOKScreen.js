@@ -6,7 +6,9 @@ import { Padding, Color, FontFamily, FontSize } from "../GlobalStyles";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const TikiOkScreen = () => {
+const TikiOkScreen = (props) => {
+  const { navigation, route } = props;
+  const { navigate, goBack } = navigation;
   return (
     <View style={styles.tikiOkScreen}>
       <View style={[styles.backgroundParent, styles.parentPosition]}>
@@ -24,6 +26,7 @@ const TikiOkScreen = () => {
             titleStyle={styles.frameButtonBtn}
             containerStyle={styles.frameButtonBtn1}
             buttonStyle={styles.frameButtonBtn2}
+            onPress={() => navigate("LoginScreen")}
           />
           <View style={[styles.thnhTinParent, styles.frameParentSpaceBlock]}>
             <Text style={[styles.thnhTin, styles.text2Typo]}>Thành tiền</Text>
@@ -141,6 +144,7 @@ const TikiOkScreen = () => {
                     titleStyle={styles.frameButton1Btn}
                     containerStyle={styles.frameButton1Btn1}
                     buttonStyle={styles.frameButton1Btn2}
+                    onPress={() => navigate("RateScreen")}
                   />
                 </View>
               </View>

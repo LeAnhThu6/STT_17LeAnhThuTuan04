@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 
-const RateScreen = () => {
+const RateScreen = (props) => {
+  const { navigation, route } = props;
+  const { navigate, goBack } = navigation;
   return (
     <View style={styles.b}>
       <View style={[styles.frameParent, styles.parentPosition]}>
@@ -35,10 +37,13 @@ const RateScreen = () => {
           />
         </View>
         <Text style={[styles.ccKHi, styles.ccKHiTypo]}>Cực kỳ hài lòng</Text>
-        <View style={styles.rectangleParent}>
+        <TouchableOpacity
+          style={styles.rectangleParent}
+          onPress={() => navigate("TikiOKScreen")}
+        >
           <View style={styles.rectangleView} />
           <Text style={styles.gi}>Gửi</Text>
-        </View>
+        </TouchableOpacity>
         <View style={[styles.hyChiSNhngIuMBnTParent, styles.groupChildLayout]}>
           <Text style={[styles.hyChiS, styles.hyChiSTypo]}>
             Hãy chi sẻ những điều mà bạn thích về sản phẩm
@@ -48,7 +53,10 @@ const RateScreen = () => {
         <View style={[styles.groupWrapper, styles.groupLayout]}>
           <View style={[styles.rectangleGroup, styles.groupLayout]}>
             <View style={[styles.groupItem, styles.groupLayout]} />
-            <View style={[styles.thmHnhNhParent, styles.cameraIconLayout]}>
+            <TouchableOpacity
+              style={[styles.thmHnhNhParent, styles.cameraIconLayout]}
+              onPress={() => navigate("GeneratePasswordScreen")}
+            >
               <Text style={[styles.thmHnhNh, styles.ccKHiTypo]}>
                 Thêm hình ảnh
               </Text>
@@ -57,7 +65,7 @@ const RateScreen = () => {
                 contentFit="cover"
                 source={require("../assets/camera.png")}
               />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View

@@ -7,6 +7,7 @@ import {
   RateScreen,
   GeneratePasswordScreen,
   TikiOKScreen,
+  Demo,
 } from "./screens";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -27,7 +28,7 @@ const App = () => {
       <NavigationContainer>
         {hideSplashScreen ? (
           <Stack.Navigator
-            initialRouteName="TikiOKScreen"
+            initialRouteName="LoginScreen"
             screenOptions={{ headerShown: false }}
           >
             <Stack.Screen
@@ -41,6 +42,7 @@ const App = () => {
               component={GeneratePasswordScreen}
             />
             <Stack.Screen name="TikiOKScreen" component={TikiOKScreen} />
+            <Stack.Screen name="Demo" component={Demo} />
           </Stack.Navigator>
         ) : null}
       </NavigationContainer>
